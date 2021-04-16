@@ -1,49 +1,55 @@
-import React, { Component } from "react";
+import React from 'react';
 
-export default class Table extends Component {
-  reformatDate = (date) => {
-    let year = date.slice(0, 4);
-    year = date.slice(5, 10) + "-" + year;
-    return year;
-  };
-
-  stringToNumber = (string) => {
-    let newNum = parseFloat(string);
-    newNum = "$" + newNum.toFixed(2);
-    return newNum;
-  };
-
-  render() {
-    return (
-      <table className="table table-striped">
-        <thead>
-          <tr className="Dark">
-            <th>date</th>
-            <th>amount</th>
-            <th>location of purchase</th>
-            <th>expence description</th>
+const Table = ({
+  reformatDate,
+  stringToNumber,
+  userData,
+  manageBox,
+  deleteRow
+}) => {
+  return (
+    <table className='table table-striped'>
+      <thead>
+        <tr className='Dark'>
+          <th>date</th>
+          <th>amount</th>
+          <th>location of purchase</th>
+          <th>expence description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {userData.map((purchase, index) => (
+          <tr key={index}>
+            <td>{reformatDate(purchase.date)}</td>
+            <td>{stringToNumber(purchase.amount)}</td>
+            <td>{purchase.description}</td>
+            <td>{purchase.location}</td>
+            <td>
+              <input
+                id={index}
+                checked={purchase.checkbox}
+                className='marker'
+                onChange={manageBox}
+                type='checkbox'
+              ></input>
+            </td>
+            <td>
+              <button
+                className='btn btn-danger  float-end '
+                onClick={() => {
+                  deleteRow(purchase.id);
+                  console.log('purchase: ', purchase);
+                }}
+                type='button'
+              >
+                delete
+              </button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {this.props.userData.map((pruchase, index) => (
-            <tr key={index}>
-              <td>{this.reformatDate(pruchase.dateOfExpence)}</td>
-              <td>{this.stringToNumber(pruchase.userSpentAmount)}</td>
-              <td>{pruchase.itemDescription}</td>
-              <td>{pruchase.whereExpenceOccured}</td>
-              <td>
-                <input
-                  id={index}
-                  checked={pruchase.checkbox}
-                  className="marker"
-                  onChange={this.props.mannageBox}
-                  type="checkbox"
-                ></input>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  }
-}
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default Table;

@@ -1,107 +1,99 @@
-import React, { Component } from "react";
-import Form from "./Formfield";
-import Table from "./Table";
+import React, { Component } from 'react';
+import Form from './Formfield';
+import Table from './Table';
 
 class App extends Component {
   state = {
-    dateOfExpence: "",
+    dateOfExpense: '',
     userSpentAmount: 0,
-    itemDescription: "",
-    whereExpenceOccured: "",
-    todo: [],
+    itemDescription: '',
+    whereExpenseOccured: '',
+    expenses: []
   };
-  onUserInput = (e) => {
-    switch (e.target.id) {
-      case "date":
-        this.setState({ dateOfExpence: e.target.value });
-
-        // this.setState({dateOfExpence: e.target.value })
-        break;
-      case "spentAmount":
-        this.setState({ userSpentAmount: e.target.value });
-        break;
-      case "description":
-        this.setState({ itemDescription: e.target.value });
-        break;
-      case "expenceDetail":
-        this.setState({ whereExpenceOccured: e.target.value });
-        break;
-
-      default:
-        break;
-    }
-  };
-  handleInput = (date, amount, description, expenceOccred, checkbox) => {
-    date === ""
-      ? alert("please enter date")
-      : amount <= 0
-      ? alert("please enter amount over $0.00")
-      : description === ""
-      ? alert("please enter description")
-      : expenceOccred === ""
-      ? alert("please enter where expence occured")
-      : this.setState({
-          todo: [
-            ...this.state.todo,
-            {
-              dateOfExpence: date,
-              userSpentAmount: amount,
-              itemDescription: description,
-              whereExpenceOccured: expenceOccred,
-              checkbox: false,
-            },
-          ],
-          dateOfExpence: "",
-          userSpentAmount: 0,
-          itemDescription: "",
-          whereExpenceOccured: "",
-        });
-  };
-
-  storInput = (e) => {
-    e.preventDefault();
-    this.handleInput(
-      this.state.dateOfExpence,
-      this.state.userSpentAmount,
-      this.state.itemDescription,
-      this.state.whereExpenceOccured
-    );
-  };
-  handleCheckbox = (e) => {
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log('name: ', name, 'value: ', value);
     this.setState({
-      todo: this.state.todo.map((obj, index) => {
-        if (index === e.target.id * 1) {
-          return {
-            ...obj,
-            checkbox: !obj.checkbox,
-          };
-        } else {
-          return { ...obj };
-        }
-      }),
+      [name]: value
+    });
+
+    console.log('state: ', this.state);
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newExpense = {
+      id: Date.now(),
+      date: this.state.dateOfExpense,
+      amount: this.state.userSpentAmount,
+      description: this.state.itemDescription,
+      location: this.state.whereExpenseOccured
+    };
+
+    this.setState({
+      expenses: [...this.state.expenses, newExpense]
+      // dateOfExpense: '',
+      // userSpentAmount: 0,
+      // itemDescription: '',
+      // whereExpenseOccured: ''
     });
   };
-  deleteRow = () => {
+
+  handleCheckbox = (e) => {
     this.setState({
-      todo: this.state.todo.filter((obj) => obj.checkbox === false),
+      todo: this.state.expenses.map((expense, index) => {
+        if (index === e.target.id * 1) {
+          return {
+            checkbox: !expense.checkbox
+          };
+          // } else {
+          //   return { ...expense };
+        }
+      })
+    });
+  };
+
+  reformatDate = (date) => {
+    let year = date.slice(0, 4);
+    year = date.slice(5, 10) + '-' + year;
+    return year;
+  };
+
+  stringToNumber = (amountString) => {
+    let newNum = parseFloat(amountString);
+    newNum = '$' + newNum.toFixed(2);
+    return newNum;
+  };
+  deleteRow = (id) => {
+    console.log('I done fired');
+    const removedRow = this.state.expenses.filter(
+      (expense) => id !== expense.id
+    );
+    this.setState({
+      expenses: removedRow
     });
   };
 
   render() {
     return (
-      <div className="container">
-        <h1 className="text-center"> Expence-tracker</h1>
+      <div className='container'>
+        <h1 className='text-center'> Expence-tracker</h1>
         <Form
           data={this.state}
-          change={this.onUserInput}
-          submit={this.storInput}
-          delete={this.deleteRow}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
         />
-        <Table userData={this.state.todo} mannageBox={this.handleCheckbox} />
+        <Table
+          userData={this.state.expenses}
+          manageBox={this.handleCheckbox}
+          reformatDate={this.reformatDate}
+          stringToNumber={this.stringToNumber}
+          deleteRow={this.deleteRow}
+        />
       </div>
     );
   }
 }
 
 export default App;
-  

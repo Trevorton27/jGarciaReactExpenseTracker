@@ -1,56 +1,47 @@
-import React, { Component } from "react";
+import React from 'react';
 
-class Form extends Component {
-  render() {
-    return (
-      <form>
-        <input
-          id="date"
-          type="date"
-          value={this.props.data.dateOfExpence}
-          onChange={this.props.change}
-        />
-        <input
-          className="m-2"
-          id="spentAmount"
-          type="number"
-          value={this.props.data.userSpentAmount}
-          onChange={this.props.change}
-        />
-        <input
-          placeholder="location of purchase"
-          id="description"
-          type="text"
-          value={this.props.data.itemDescription}
-          onChange={this.props.change}
-        />
-        <input
-          className="m-2"
-          placeholder="expence description"
-          id="expenceDetail"
-          type="text"
-          value={this.props.data.whereExpenceOccured}
-          onChange={this.props.change}
-        />
-        <div>
-          <button
-            className="btn btn-danger  float-end "
-            onClick={this.props.delete}
-            type="button"
-          >
-            delete
-          </button>
-          <button
-            className="btn btn-primary float-end me-3"
-            onClick={this.props.submit}
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    );
-  }
-}
+const Form = (props) => {
+  return (
+    <form onSubmit={props.handleSubmit}>
+      <input
+        name='dateOfexpense'
+        type='date'
+        onChange={props.handleChange}
+        value={props.data.dateOfexpense}
+      />
+      <input
+        className='m-2'
+        name='userSpentAmount'
+        type='number'
+        onChange={props.handleChange}
+        value={props.data.userSpentAmount}
+      />
+      <input
+        placeholder='location of purchase'
+        name='itemDescription'
+        type='text'
+        onChange={props.handleChange}
+        value={props.data.itemDescription}
+      />
+      <input
+        className='m-2'
+        placeholder='expense description'
+        name='whereExpenseOccured'
+        type='text'
+        onChange={props.handleChange}
+        value={props.data.whereExpenseOccured}
+      />
+      <div>
+        <button
+          className='btn btn-primary float-end me-3'
+          onClick={props.submit}
+          type='submit'
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  );
+};
 
 export default Form;
