@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Form from './Formfield';
-import Table from './Table';
+import Form from './components/Formfield';
+import Table from './components/Table';
+import './App.css';
 
 class App extends Component {
   state = {
