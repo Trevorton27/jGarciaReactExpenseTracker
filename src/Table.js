@@ -1,12 +1,7 @@
 import React from 'react';
+import './App.css';
 
-const Table = ({
-  reformatDate,
-  stringToNumber,
-  userData,
-  manageBox,
-  deleteRow
-}) => {
+const Table = ({ reformatDate, stringToNumber, userData, handleCheckbox }) => {
   return (
     <table className='table table-striped'>
       <thead>
@@ -14,37 +9,26 @@ const Table = ({
           <th>date</th>
           <th>amount</th>
           <th>location of purchase</th>
-          <th>expence description</th>
+          <th>expense description</th>
         </tr>
       </thead>
       <tbody>
-        {userData.map((purchase, index) => (
-          <tr key={index}>
+        {userData.map((purchase) => (
+          <tr key={purchase.id}>
             <td>{reformatDate(purchase.date)}</td>
             <td>{stringToNumber(purchase.amount)}</td>
             <td>{purchase.description}</td>
             <td>{purchase.location}</td>
             <td>
               <input
-                id={index}
+                id={purchase.id}
                 checked={purchase.checkbox}
                 className='marker'
-                onChange={manageBox}
+                onChange={handleCheckbox}
                 type='checkbox'
               ></input>
             </td>
-            <td>
-              <button
-                className='btn btn-danger  float-end '
-                onClick={() => {
-                  deleteRow(purchase.id);
-                  console.log('purchase: ', purchase);
-                }}
-                type='button'
-              >
-                delete
-              </button>
-            </td>
+            <td></td>
           </tr>
         ))}
       </tbody>

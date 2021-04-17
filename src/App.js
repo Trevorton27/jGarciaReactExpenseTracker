@@ -10,14 +10,27 @@ class App extends Component {
     whereExpenseOccured: '',
     expenses: []
   };
+
+  componentDidMount() {
+    const localStorageExpenses =
+      JSON.parse(localStorage.getItem('expenses')) || [];
+
+    this.setState({
+      expenses: localStorageExpenses
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.expenses !== prevState.expenses.length) {
+      localStorage.setItem('expenses', JSON.stringify(this.state.expenses));
+    }
+  }
+
   handleChange = (e) => {
     const { name, value } = e.target;
-    console.log('name: ', name, 'value: ', value);
     this.setState({
       [name]: value
     });
-
-    console.log('state: ', this.state);
   };
 
   handleSubmit = (e) => {
@@ -28,30 +41,34 @@ class App extends Component {
       date: this.state.dateOfExpense,
       amount: this.state.userSpentAmount,
       description: this.state.itemDescription,
-      location: this.state.whereExpenseOccured
+      location: this.state.whereExpenseOccured,
+      checkbox: false
     };
 
     this.setState({
-      expenses: [...this.state.expenses, newExpense]
-      // dateOfExpense: '',
-      // userSpentAmount: 0,
-      // itemDescription: '',
-      // whereExpenseOccured: ''
+      expenses: [...this.state.expenses, newExpense],
+      dateOfExpense: '',
+      userSpentAmount: 0,
+      itemDescription: '',
+      whereExpenseOccured: ''
     });
   };
 
   handleCheckbox = (e) => {
     this.setState({
-      todo: this.state.expenses.map((expense, index) => {
-        if (index === e.target.id * 1) {
+      expenses: this.state.expenses.map((expense) => {
+        if (expense.id === e.target.id * 1) {
+          console.log('row.target.id: ', e.target.id);
           return {
+            ...expense,
             checkbox: !expense.checkbox
           };
-          // } else {
-          //   return { ...expense };
+        } else {
+          return { ...expense };
         }
       })
     });
+    console.log('expenses checkbox: ', this.state.expenses);
   };
 
   reformatDate = (date) => {
@@ -65,31 +82,30 @@ class App extends Component {
     newNum = '$' + newNum.toFixed(2);
     return newNum;
   };
-  deleteRow = (id) => {
+  deleteRow = () => {
     console.log('I done fired');
-    const removedRow = this.state.expenses.filter(
-      (expense) => id !== expense.id
-    );
     this.setState({
-      expenses: removedRow
+      expenses: this.state.expenses.filter(
+        (expense) => expense.checkbox === false
+      )
     });
   };
 
   render() {
     return (
       <div className='container'>
-        <h1 className='text-center'> Expence-tracker</h1>
+        <h1 className='text-center'> Expense-tracker</h1>
         <Form
           data={this.state}
           handleChange={this.handleChange}
           handleSubmit={this.handleSubmit}
+          deleteRow={this.deleteRow}
         />
         <Table
           userData={this.state.expenses}
-          manageBox={this.handleCheckbox}
+          handleCheckbox={this.handleCheckbox}
           reformatDate={this.reformatDate}
           stringToNumber={this.stringToNumber}
-          deleteRow={this.deleteRow}
         />
       </div>
     );
